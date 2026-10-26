@@ -1,5 +1,5 @@
 /* Service worker: funciona sin conexión y se actualiza solo cuando hay red */
-const CACHE = "cj-checklist-2026-10-26 v1";
+const CACHE = "cj-checklist-2026-10-26 v2";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -16,7 +16,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
   if (req.mode === "navigate") {
-    // Red primero (con límite de 4 s, por si el Gran Cortafuegos ralentiza), y si no, la copia guardada
+    // Red primero (con límite de 4 s, por si la red va lenta), y si no, la copia guardada
     e.respondWith(
       Promise.race([fetch(req), timeout(4000)])
         .then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put("./index.html", copy)); return res; })
